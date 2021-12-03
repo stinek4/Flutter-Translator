@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tema8/Views/Widgets/mydropdownbutton.dart';
 
 class MainPage extends StatefulWidget{
   @override
@@ -17,7 +18,8 @@ class _MainPageState extends State<MainPage>{
       body: SingleChildScrollView(
         child: Row(
           children: [
-            Text('Hello')
+            MyDropDownButton(),
+            Text('Hello world')
           ],
         )
       ),
