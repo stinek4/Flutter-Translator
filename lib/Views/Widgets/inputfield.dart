@@ -13,7 +13,7 @@ class InputField extends StatelessWidget{
     var provider = Provider.of<AppData>(context, listen: false);
 
     return Card(
-      elevation: 0.0,
+      elevation: 0.5,
       child: TextField(
         maxLines: 4,
         controller: provider.textFieldController,

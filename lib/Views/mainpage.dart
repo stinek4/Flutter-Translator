@@ -13,7 +13,6 @@ class MainPage extends StatefulWidget{
   _MainPageState createState() => _MainPageState();
 }
 
-
 class _MainPageState extends State<MainPage>{
 
   @override
@@ -29,7 +28,7 @@ class _MainPageState extends State<MainPage>{
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MyDropDownButton(enumFromOrTo.FROM),
-                IconButton(icon: const Icon(Icons.arrow_drop_down), onPressed: () {
+                IconButton(icon: const Icon(Icons.swap_horiz), onPressed: () {
                   Provider.of<AppData>(context, listen: false).switchLanguages();
                 }),
                 MyDropDownButton(enumFromOrTo.TO),
@@ -45,10 +44,12 @@ class _MainPageState extends State<MainPage>{
             ],
 
             if(provider.favorites.length > 0 || provider.history.length >0) ... [
+              if(provider.favorites.isNotEmpty && provider.history.isNotEmpty) ... [
               FavoritesOrHistory(provider),
-            ],
-            TranslatedResult(provider.shouldShowHistory),
-          ]
+              ],
+              TranslatedResult(provider.shouldShowHistory),
+            ]
+          ],
         )
       )
     );
