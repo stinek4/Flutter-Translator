@@ -1,37 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tema8/Models/appdata.dart';
+import 'package:tema8/Models/translationmodel.dart';
 
 class TranslatedResult extends StatelessWidget {
+  const TranslatedResult(this.showHistory, {Key? key}) : super(key: key);
+
+  final bool showHistory;
 
   @override
   Widget build(BuildContext context){
-    return _translatedResult(context);
+    var provider = Provider.of<AppData>(context);
+    return Flexible(
+      child: ListView(
+        children: showHistory ? provider.history.reversed.map((e) => _historyBuild(e, context)).toList() :
+            provider.favorites.reversed.map((e) => _historyBuild(e, context)).toList(),
+      )
+    );
   }
 
-  Widget _translatedResult(BuildContext context){
-    //final provider = Provider.of<AppData>(context);
+  Widget _historyBuild(TranslationModel model, BuildContext context){
+    var provider = Provider.of<AppData>(context, listen: false);
+    return Dismissible(
+        key: Key(model.translation.text),
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction){
+          showHistory ?
+              provider.deleteFromList(model, provider.history) :
+              provider.deleteFromList(model, provider.favorites);
+        },
+        background: Container(
+          color: Colors.redAccent,
+          padding: EdgeInsets.only(right: 16.0),
+          alignment: Alignment.centerRight,
+          child: const Icon(Icons.close),
+        ),
+        child: ListTile(
+          title: Text(model.translation.text,
+          maxLines: 3,
+          ),
+          subtitle: Text(model.translation.source,
+          maxLines: 3,
+          ),
+          trailing: IconButton(
+            onPressed: (){
+              provider.changeFavorites(model);
+            },
+            icon: model.isFavorite ?
+                Icon(Icons.star) :
+                Icon(Icons.star_border),
+          ),
+          onTap: (){
+            provider.setCurrentTranslationModel(model);
+          },
 
-    return Card(
-      color: Colors.blue[500],
-      child: Container(
-        height: (1/5 * MediaQuery.of(context).size.height),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                ]
-              )
-            )
-          ]
-        )
-      ),
-    );
-
-
-
-
+        ));
   }
 }
