@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tema8/Models/appdata.dart';
 
-/*
 class InputField extends StatelessWidget{
 
   @override
@@ -9,6 +10,7 @@ class InputField extends StatelessWidget{
   }
 
   Widget _inputField(BuildContext context){
+    var provider = Provider.of<AppData>(context, listen: false);
 
     return Card(
       elevation: 0.0,
@@ -17,13 +19,13 @@ class InputField extends StatelessWidget{
         controller: provider.textFieldController,
         textInputAction: TextInputAction.done,
         onChanged: (newVal){
-          provider.throttledTranslate(newVal);
+          provider.delayedTranslation(newVal);
         },
         onSubmitted: (newVal){
-          provider.historyAdd();
+          provider.historyAddCheck();
         },
         autocorrect: false,
       )
-    )
+    );
   }
-}*/
+}
