@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tema8/Models/appdata.dart';
 
+//Widget used in mainpage.dart to show input field
+
 class InputField extends StatelessWidget{
 
   @override

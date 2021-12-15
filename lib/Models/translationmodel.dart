@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:tema8/Models/translationdata.dart';
-import 'package:translator/translator.dart';
 
+//Setting up TM to connect with json through TranslationData
 class TranslationModel{
   final TranslationData translation;
   bool isFavorite;
@@ -11,10 +10,6 @@ class TranslationModel{
   void setFavorite(){
     isFavorite = !isFavorite;
   }
-
-/*  static TranslationModel fromJson2(dynamic json){
-    return TranslationModel(json["translation"]);
-  }*/
 
   TranslationModel.fromJson(Map<String, dynamic> json)
   : translation = TranslationData.fromJson(json["translation"]),

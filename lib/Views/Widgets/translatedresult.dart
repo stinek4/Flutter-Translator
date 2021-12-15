@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tema8/Models/appdata.dart';
 import 'package:tema8/Models/translationmodel.dart';
 
+//Widget used in mainpage.dart to show result of translation, showcased via SwitchListTile either as history or favorite
+
 class TranslatedResult extends StatelessWidget {
   const TranslatedResult(this.showHistory, {Key? key}) : super(key: key);
 
@@ -44,7 +46,7 @@ class TranslatedResult extends StatelessWidget {
           ),
           trailing: IconButton(
             onPressed: (){
-              provider.changeFavorites(model);
+              provider.changeToFavorites(model);
             },
             icon: model.isFavorite ?
                 Icon(Icons.star) :

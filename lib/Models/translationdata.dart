@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tema8/Models/languagedata.dart';
 import 'package:translator/translator.dart';
 
+//Connecting language, the code (json) with translation and TM
 class TranslationData{
   late final String text;
   late final String source;

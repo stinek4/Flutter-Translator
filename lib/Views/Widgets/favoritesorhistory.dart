@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tema8/Models/appdata.dart';
 
+//Widget used in mainpage.dart to showcase favorites
+
 class FavoritesOrHistory extends StatelessWidget{
   AppData provider;
   FavoritesOrHistory(this.provider);

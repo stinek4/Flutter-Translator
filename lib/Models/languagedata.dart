@@ -1,5 +1,7 @@
 import 'package:translator/src/langs/language.dart';
 
+
+//Connection between the code (json) to Languages API
 class LanguageData{
   late final String code;
   late final String name;

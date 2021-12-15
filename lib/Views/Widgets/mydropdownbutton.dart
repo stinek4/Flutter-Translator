@@ -4,6 +4,8 @@ import 'package:tema8/Consts/availablelanguages.dart';
 import 'package:tema8/Consts/consts.dart';
 import 'package:tema8/Models/appdata.dart';
 
+//Widget used in mainpage.dart to show the dropdownbuttons
+
 class MyDropDownButton extends StatelessWidget {
   const MyDropDownButton(this._fromOrTo, {Key? key}): super(key:key);
 

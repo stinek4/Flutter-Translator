@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Listens to ChangeNotifier, reebuilds whenever notifylistener() is called
     return ChangeNotifierProvider(
         create: (context) => AppData(),
     child: MaterialApp(

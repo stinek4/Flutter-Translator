@@ -9,9 +9,10 @@ import 'package:tema8/Models/translationmodel.dart';
 import 'package:translator/translator.dart';
 import 'package:tema8/Consts/availablelanguages.dart';
 
-//ChangeNotifier for API
+//ChangeNotifier for API, connected to ChangeNotifierProvider in main.dart
 class AppData extends ChangeNotifier{
 
+  //Initializes default languages in the dropdownbuttons + gets history and favorites from SharedPrefs
   AppData(){
     initializeTheLanguages();
     _getFromSharedPrefs("History", historyKey);
@@ -20,16 +21,24 @@ class AppData extends ChangeNotifier{
 
   late LanguageData fromLang;
   late LanguageData toLang;
-
   final textFieldController = TextEditingController();
   final translator = GoogleTranslator();
   TranslationModel? currentTranslationModel;
 
+  List<TranslationModel> history = [];
+  List<TranslationModel> favorites = [];
+
+  bool shouldShowHistory = false;
+  bool currentIsInHistory() => history.contains(currentTranslationModel);
+  bool currentIsFavorite() => currentTranslationModel!.isFavorite;
+
+  //Sets which languange via languages API in LanguageData to be default initialized
   void setLanguage(enumFromOrTo fromOrTo, LanguageData lang){
     fromOrTo == enumFromOrTo.TO ? toLang = lang: fromLang = lang;
     notifyListeners();
   }
 
+  //Button between dropdown buttons
   void switchLanguages(){
     LanguageData thisFrom = fromLang;
     LanguageData thisTo = toLang;
@@ -41,6 +50,7 @@ class AppData extends ChangeNotifier{
     notifyListeners();
   }
 
+  //Throttles the input with 0.5 secs
   void delayedTranslation(String input){
     Future.delayed(const Duration(milliseconds: 500), () {
       if(input == textFieldController.text){
@@ -49,13 +59,13 @@ class AppData extends ChangeNotifier{
     });
   }
 
+ //Entry in input set up against available languages
   LanguageData getLanguagesFromString(String input){
     var entry = listOfLanguages.entries.firstWhere((element) => element.value == input);
     return LanguageData(entry.key, entry.value);
-/*    return languages.values.firstWhere((element) => element.toString() == languages+lang);*/
   }
 
-
+  //Entry in input calls on TM, using API translator to translate against chosen language
   void _translate(String input) {
     if (textFieldController.text != "") {
       translator.translate(input, from: fromLang.code, to: toLang.code).then((
@@ -76,31 +86,31 @@ class AppData extends ChangeNotifier{
       notifyListeners();
     }
 
+    //If check to check translation
     void _checkTranslation(String input) {
       currentTranslationModel != null ? {
         if(currentTranslationModel!.translation.source != input){
           _translate(input),
         }
       }
-          : {
+      : {
         _translate(input)
       };
     }
-
+    //Called upon in init of AppData
     void initializeTheLanguages() {
-      fromLang = getLanguagesFromString("Automatic");
+      fromLang = getLanguagesFromString("Norwegian");
       toLang = getLanguagesFromString("English");
     }
 
-    //History
-    bool shouldShowHistory = false;
-    List<TranslationModel> history = [];
+//HISTORY
 
     void showHistory(bool newValue) {
       shouldShowHistory = newValue;
       notifyListeners();
     }
 
+    //If check on history
     void historyAddCheck() {
       if (currentTranslationModel != null && !currentIsInHistory()) {
         _addToHistory(currentTranslationModel!);
@@ -113,8 +123,6 @@ class AppData extends ChangeNotifier{
       _listChanges();
     }
 
-    bool currentIsInHistory() =>
-        history.contains(currentTranslationModel);
 
     void _checkIfItIsHistory() {
       if (history.isEmpty && favorites.isNotEmpty) {
@@ -122,21 +130,6 @@ class AppData extends ChangeNotifier{
       } else if (favorites.isEmpty && history.isNotEmpty){
       showHistory(true);
       }
-    }
-
-    void _listChanges() {
-      _checkIfItIsHistory();
-      _saveToSharedPrefs();
-      notifyListeners();
-    }
-
-    void _moveBetweenLists(TranslationModel translationModel,
-        List<TranslationModel> fromList, List<TranslationModel> toList) {
-      if (fromList.contains(translationModel)) {
-        fromList.remove(translationModel);
-      }
-      toList.add(translationModel);
-      _listChanges();
     }
 
     void deleteFromList(TranslationModel translationModel, List<TranslationModel> listToDeleteFrom){
@@ -149,11 +142,20 @@ class AppData extends ChangeNotifier{
       _listChanges();
     }
 
-    //Favorites
+//FAVORITES
 
-    List<TranslationModel> favorites = [];
+    //The switch button in SwitchListTile
+    void _moveBetweenLists(TranslationModel translationModel,
+        List<TranslationModel> fromList, List<TranslationModel> toList) {
+      if (fromList.contains(translationModel)) {
+        fromList.remove(translationModel);
+      }
+      toList.add(translationModel);
+      _listChanges();
+    }
 
-    void changeFavorites(TranslationModel translationModel) {
+    //The switch button in SwitchListTile
+    void changeToFavorites(TranslationModel translationModel) {
       translationModel.setFavorite();
       translationModel.isFavorite ?
       _moveBetweenLists(translationModel, history, favorites) :
@@ -163,27 +165,32 @@ class AppData extends ChangeNotifier{
       showHistory(!translationModel.isFavorite);
     }
 
-    bool currentIsFavorite() => currentTranslationModel!.isFavorite;
+    void _listChanges() {
+      _checkIfItIsHistory();
+      _saveToSharedPrefs();
+      notifyListeners();
+    }
 
-    //Shared Prefs
+
+//SHARED PREFS
 
     void _getFromSharedPrefs(String theListToGet, String key) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final json = prefs.getString(key);
-      if (json != null) {
-        final decoded = jsonDecode(json);
-        final iterable = decoded as Iterable<dynamic>;
-        var list = List<TranslationModel>.of(
-            iterable.map((e) => TranslationModel.fromJson(e)));
-        if (theListToGet == "History") {
-          history = list;
-        } else if (theListToGet == "Favorites") {
-          favorites = list;
+        if (json != null) {
+          final decoded = jsonDecode(json);
+          final iterable = decoded as Iterable<dynamic>;
+          var list = List<TranslationModel>.of(
+              iterable.map((e) => TranslationModel.fromJson(e)));
+            if (theListToGet == "History") {
+              history = list;
+            } else if (theListToGet == "Favorites") {
+              favorites = list;
+            }
+            notifyListeners();
+        } else {
+          return;
         }
-        notifyListeners();
-      } else {
-        return;
-      }
     }
 
     void _saveToSharedPrefs() async {

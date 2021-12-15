@@ -1,5 +1,6 @@
+//Available languages to translate from or to
+
 final listOfLanguages = {
-  'auto': 'Automatic',
   'da': 'Danish',
   'en': 'English',
   'es': 'Spanish',

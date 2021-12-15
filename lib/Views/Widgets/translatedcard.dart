@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tema8/Models/appdata.dart';
 
+//Widget used in mainpage.dart to show the translated result from input field
+
 
 class TranslatedCard extends StatelessWidget {
   const TranslatedCard({Key? key}) : super(key: key);
@@ -56,7 +58,7 @@ class TranslatedCard extends StatelessWidget {
           )
         ),
         IconButton(onPressed: () {
-          provider.changeFavorites(provider.currentTranslationModel!);
+          provider.changeToFavorites(provider.currentTranslationModel!);
           if(provider.textFieldController.text != ""){
             provider.textFieldController.clear();
           }
